@@ -1,4 +1,5 @@
 import { useReducer, useState } from 'react';
+import apiClient from './js/apiClient';
 
 function PastForm() {
   const formReducer = (state, event) => ({
@@ -8,32 +9,55 @@ function PastForm() {
 
   const [formData, setFormData] = useReducer(formReducer, {});
   const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setError(false);
     setSubmitting(true);
 
-    setTimeout(() => {
+    try {
+      const res = await apiClient.post('/paste', {
+        data: formData.pasteText,
+      });
       setSubmitting(false);
-      console.log('sent', formData);
-    }, 3000);
+      console.log(res.data);
+    } catch (err) {
+      console.error(err);
+      setError(true);
+      setSubmitting(false);
+    }
   };
+
+  let component = (<div />);
+  if (submitting) {
+    component = (
+      <div>Sending data...</div>
+    );
+  } else {
+    component = (
+      <div>
+        {
+          error ? (
+            <div>
+              An error occured! Please try again.
+            </div>
+          ) : null
+        }
+        <form onSubmit={handleSubmit}>
+          <label>
+            New paste:
+            <textarea name="pasteText" onChange={setFormData} />
+          </label>
+          <button type="submit" value="Submit">Create new paste</button>
+        </form>
+      </div>
+    );
+  }
 
   return (
     <div>
-      {
-        submitting
-          ? <div>Sending data...</div>
-          : (
-            <form onSubmit={handleSubmit}>
-              <label>
-                New paste:
-                <textarea name="pasteText" onChange={setFormData} />
-              </label>
-              <button type="submit" value="Submit">Create new paste</button>
-            </form>
-          )
-      }
+      {component}
     </div>
   );
 }
