@@ -4,6 +4,8 @@ This is PastaBin's Web client.
 
 PastaBin is a very simplifyed version of Pastbin.
 
+Live at https://web-pastabin.herokuapp.com/
+
 # Running locally
 
 ## Configure environment variables
