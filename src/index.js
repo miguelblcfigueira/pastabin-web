@@ -3,13 +3,15 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import reportWebVitals from './reportWebVitals';
-import PastForm from './PastForm';
+import PasteForm from './PasteForm';
+import PasteViewer from './PasteViewer';
 
 ReactDOM.render(
   <React.StrictMode>
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<PastForm />} />
+        <Route path="/" element={<PasteForm />} />
+        <Route path="/:pasteId" element={<PasteViewer />} />
       </Routes>
     </BrowserRouter>
   </React.StrictMode>,
