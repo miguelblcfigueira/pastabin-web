@@ -1,5 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import styled from 'styled-components';
+import { ErrorMessage, WarningMessage } from './components/message';
+import StyledTextArea from './components/textarea';
 import apiClient from './js/apiClient';
 
 function PasteViewer() {
@@ -7,6 +10,7 @@ function PasteViewer() {
   const [error, setError] = useState(false);
   const [pasteText, setPasteText] = useState('');
   const [expirationDate, setExpirationDate] = useState(null);
+  const [notFoundError, setNotFoundError] = useState(false);
 
   useEffect(async () => {
     try {
@@ -15,25 +19,48 @@ function PasteViewer() {
       setPasteText(data);
       setExpirationDate(expiresAt);
     } catch (err) {
-      console.error(err);
-      setError(true);
+      if (err.response && err.response.status === 404) {
+        setNotFoundError(true);
+      } else {
+        setError(true);
+      }
     }
   });
 
+  if (notFoundError) {
+    return (
+      <WarningMessage>
+        The Paste requested does not exist or it has already expired.
+      </WarningMessage>
+    );
+  }
+
   return (
-    <div>
+    <div style={{ flex: 1 }}>
       {
         error ? (
-          <div>
+          <ErrorMessage>
             An error occured! Please try again.
-          </div>
+          </ErrorMessage>
         ) : null
       }
-      {pasteText}
-      Expires at:
-      {expirationDate}
+      <PasteInfoContainer>
+        <span style={{ fontWeight: 'bold' }}>Expiration:</span>
+        {' '}
+        {new Date(expirationDate).toLocaleString()}
+      </PasteInfoContainer>
+      <StyledTextArea
+        defaultValue={pasteText}
+        readOnly
+      />
     </div>
   );
 }
+
+const PasteInfoContainer = styled.div`
+  margin-top: 2em;
+  margin-bottom: 1em;
+  font-size: 1.2em;
+`;
 
 export default PasteViewer;

@@ -1,5 +1,10 @@
 import { useReducer, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import styled from 'styled-components';
+import Button from './components/button';
+import StyledForm from './components/form';
+import { ErrorMessage } from './components/message';
+import StyledTextArea from './components/textarea';
 import apiClient from './js/apiClient';
 
 function PasteForm() {
@@ -25,43 +30,47 @@ function PasteForm() {
       setSubmitting(false);
       navigate(`${res.data.id}`);
     } catch (err) {
-      console.error(err);
       setError(true);
       setSubmitting(false);
     }
   };
 
-  let component = (<div />);
+  let content = (<div />);
   if (submitting) {
-    component = (
+    content = (
       <div>Sending data...</div>
     );
   } else {
-    component = (
+    content = (
       <div>
         {
           error ? (
-            <div>
+            <ErrorMessage>
               An error occured! Please try again.
-            </div>
+            </ErrorMessage>
           ) : null
         }
-        <form onSubmit={handleSubmit}>
-          <label>
-            New paste:
-            <textarea name="pasteText" onChange={setFormData} />
-          </label>
-          <button type="submit" value="Submit">Create new paste</button>
-        </form>
+        <StyledForm onSubmit={handleSubmit}>
+          <StyledTextArea
+            label="New paste:"
+            name="pasteText"
+            onChange={setFormData}
+          />
+          <PastFormSubmitButton type="submit" value="Submit">Create new paste</PastFormSubmitButton>
+        </StyledForm>
       </div>
     );
   }
 
   return (
-    <div>
-      {component}
+    <div style={{ flex: 1 }}>
+      {content}
     </div>
   );
 }
+
+const PastFormSubmitButton = styled(Button)`
+  margin-top: 20px;
+`;
 
 export default PasteForm;

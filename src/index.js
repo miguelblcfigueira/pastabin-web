@@ -1,18 +1,24 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import reportWebVitals from './reportWebVitals';
 import PasteForm from './PasteForm';
 import PasteViewer from './PasteViewer';
+import Header from './components/header';
+import GlobalStyle from './globalStyles';
+import ContentContainer from './components/content-container';
 
 ReactDOM.render(
   <React.StrictMode>
+    <GlobalStyle />
     <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<PasteForm />} />
-        <Route path="/:pasteId" element={<PasteViewer />} />
-      </Routes>
+      <Header />
+      <ContentContainer>
+        <Routes>
+          <Route path="/" element={<PasteForm />} />
+          <Route path="/:pasteId" element={<PasteViewer />} />
+        </Routes>
+      </ContentContainer>
     </BrowserRouter>
   </React.StrictMode>,
   document.getElementById('root'),
